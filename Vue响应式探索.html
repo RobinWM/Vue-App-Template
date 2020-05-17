@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+
+<body>
+  <h3>1.vue如何监听数据改变：Object.defineProperty</h3>
+  <h3>2.数据发生改变，vue如何通知相关使用者，使界面刷新:发布订阅模式</h3>
+
+  <div id="app">
+    <h1>{{message}}</h1>
+  </div>
+
+  <script src="./node_modules/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        message: '哈哈哈'
+      }
+    })
+
+  </script>
+
+  <script>
+    const obj = {
+      message: '哈哈哈',
+      name: 'robin',
+    }
+
+    // 1. Object.defineProperty()
+    Object.keys(obj).forEach(key => {
+      let value = obj[key];
+
+      Object.defineProperty(obj, key, {
+        set(newValue) {
+          console.log('监听' + key + '改变')
+          value = newValue
+          dep.notify();
+        },
+        get() {
+          return value
+        }
+      })
+    })
+
+    // 2.发布订阅者模式
+
+    // 2.1.发布者
+    class Dep {
+      constructor() {
+        this.subs = []
+      }
+
+      addSub(watcher) {
+        this.subs.push(watcher);
+      }
+
+      notify() {
+        this.subs.forEach(item => {
+          item.update()
+        })
+      }
+    }
+
+    // 2.2.订阅者
+    class Watcher {
+      constructor(name) {
+        this.name = name
+      }
+
+      update() {
+        console.log(this.name + '发生update')
+      }
+    }
+
+    const dep = new Dep();
+
+    const w1 = new Watcher('p1');
+    dep.addSub(w1);
+
+    const w2 = new Watcher('p2');
+    dep.addSub(w2);
+
+    const w3 = new Watcher('p3');
+    dep.addSub(w3);
+
+  </script>
+</body>
+
+</html>

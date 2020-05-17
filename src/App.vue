@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <hello-vuex/>
+<!--    <hello-vuex/>-->
+    <reactivity-test/>
   </div>
 </template>
 
 <script>
-  import HelloVuex from "views/HelloVuex";
+  // import HelloVuex from "views/HelloVuex";
+  import ReactivityTest from "views/ReactivityTest";
 
   export default {
     name: 'App',
     components: {
-      HelloVuex
+      // HelloVuex,
+      ReactivityTest
     },
   }
 </script>
